@@ -16,7 +16,7 @@ const SaveButton = ({ onSave, onCancel }) => {
             padding: "6px,16px",
           }}
         >
-          CANCEL
+          Edit
         </Button>
 
         <Button

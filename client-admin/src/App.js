@@ -4,9 +4,8 @@ import Navbar from "./component/Home/Navbar";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import ContactUsPage from "./component/contact/contact";
 import Home from "./component/Home/Home";
-import Campusbuzz from "./component/CampusBuzz/Campusbuzz";
 import { ToastContainer } from "react-toastify";
-
+// import OnlineClass from "./component/Onlineclass"; // Make sure the path is correct
 import Login from "./component/Login/login";
 import { Navigate } from "react-router-dom";
 import { useState } from "react";
@@ -47,7 +46,8 @@ function App() {
 
               <Route path="/Author" element={<Author />} />
               <Route path="/ContactUsPage" element={<ContactUsPage />} />
-              <Route path="/Campusbuzz" element={<Campusbuzz />} />
+              {/* <Route path="/onlineclass" element={<OnlineClass />} /> */}
+
               <Route path="/Testimonials" element={<Testimonials />} />
               <Route path="/Footer" element={<Footer />} />
 

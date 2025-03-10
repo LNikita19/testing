@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
+import Program from "./Program";
 
 const ProgramList = () => {
     const [programs, setPrograms] = useState([]);
+    const [showAddForm, setShowAddForm] = useState(false); // Toggle between list & form
 
     useEffect(() => {
         fetchPrograms();
@@ -26,13 +28,18 @@ const ProgramList = () => {
         }
     };
 
+    // Show Add Form when clicking "ADD NEW PROGRAM"
+    if (showAddForm) {
+        return <Program onSave={() => { setShowAddForm(false); fetchPrograms(); }} />;
+    }
+
     return (
         <div className="p-8">
             <div className="flex justify-between items-center mb-6">
                 <h1 className="text-2xl font-bold text-[#361A06]">Programs</h1>
-                <button 
+                <button
                     className="bg-[#361A06] text-white px-4 py-2 rounded-md"
-                    onClick={() => window.location.href = "/add-program"}
+                    onClick={() => setShowAddForm(true)} // Show the form
                 >
                     ADD NEW PROGRAM
                 </button>
@@ -50,13 +57,13 @@ const ProgramList = () => {
                         <h2 className="text-lg font-bold text-[#361A06] mt-2">{program.title}</h2>
                         <p className="text-sm text-gray-600">{program.description}</p>
                         <div className="mt-3">
-                            <button 
+                            <button
                                 className="bg-white border w-full py-2 rounded-md text-[#361A06] mb-2"
                                 onClick={() => window.location.href = `/edit-program/${program.id}`}
                             >
                                 Edit Program
                             </button>
-                            <button 
+                            <button
                                 className="bg-[#361A06] text-white w-full py-2 rounded-md"
                                 onClick={() => handleDelete(program.id)}
                             >

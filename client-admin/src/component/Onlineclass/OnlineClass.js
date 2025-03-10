@@ -5,7 +5,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { API_BASE_URL } from "../../config";
 
-const Program = () => {
+const Class = () => {
     const [description, setDescription] = useState("");
     const [image, setImage] = useState(null);
     const [program, setProgram] = useState("");
@@ -31,8 +31,8 @@ const Program = () => {
 
     return (
         <div className="max-w-3xl ml-[90px] bg-white p-8 rounded-2xl shadow-lg border border-gray-200">
-            <h2 className="text-3xl font-bold text-[#361A06] mb-8">New Program</h2>
-            <label className="text-sm font-bold text-[#361A06] mb-2 block">Photo </label>
+            <h2 className="text-3xl font-bold text-[#361A06] mb-8">New class</h2>
+            <label className="text-sm font-bold text-[#361A06] mb-2 block">Photo</label>
             <ImageUpload selectedImage={image} setImage={setImage} />
 
             <div className="grid grid-cols-2 gap-6 mt-8">
@@ -97,4 +97,4 @@ const Program = () => {
     );
 };
 
-export default Program;
+export default Class;

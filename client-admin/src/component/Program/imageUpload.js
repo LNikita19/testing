@@ -76,7 +76,7 @@ const ImageUpload = ({
   return (
     <>
       <div
-        className="pt-6 ml-[30px]  flex flex-col items-center justify-center w-[250px] 2xl:h-[152px] lg:h-[150px] rounded bg-[#C2C2C28F]"
+        className="pt-6 flex flex-col items-center justify-center w-[250px] 2xl:h-[152px] lg:h-[150px] rounded bg-[#C2C2C28F]"
         onDoubleClick={handleClick}
         onDragOver={handleDragOver}
         onDrop={handleDrop}

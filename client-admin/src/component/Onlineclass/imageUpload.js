@@ -7,6 +7,8 @@ import { toast } from "react-toastify";
 const ImageUpload = ({
   selectedImage,
   setImage,
+  setToggleSwitch,
+  toggleSwitch,
   slideId,
   setActiveSlideId,
 }) => {
@@ -27,16 +29,15 @@ const ImageUpload = ({
     const file = e.dataTransfer.files[0];
     handleImageChange({ target: { files: [file] } });
   };
-
   const handleCancel = () => {
     setImage(null);
   };
-
-  async function saveFooterData() {
+  async function saveAboutData() {
     try {
       const payload = {
         id: slideId,
         Photo: selectedImage,
+        Published: toggleSwitch,
       };
       const config = {
         headers: {
@@ -45,7 +46,7 @@ const ImageUpload = ({
       };
 
       const response = await axios.post(
-        `${API_BASE_URL}/createfooterData`,
+        `${API_BASE_URL}/createaboutData`,
         payload,
         config
       );
@@ -54,14 +55,14 @@ const ImageUpload = ({
         toast.success("Updated Successfully");
       }
       setImage(response.data.data?.Photo);
+      setToggleSwitch(response?.data?.data?.Published);
       setActiveSlideId(response?.data?.data?.id);
     } catch (e) {
       console.log("Error:", e);
     }
   }
-
   const handleSave = () => {
-    saveFooterData();
+    saveAboutData();
   };
 
   const handleClick = () => {
@@ -75,7 +76,7 @@ const ImageUpload = ({
   return (
     <>
       <div
-        className="pt-6 ml-[30px] flex flex-col items-center justify-center w-[250px] 2xl:h-[152px] lg:h-[150px] rounded bg-[#C2C2C28F]"
+        className="pt-6 ml-[30px]  flex flex-col items-center justify-center w-[250px] 2xl:h-[152px] lg:h-[150px] rounded bg-[#C2C2C28F]"
         onDoubleClick={handleClick}
         onDragOver={handleDragOver}
         onDrop={handleDrop}
@@ -101,10 +102,13 @@ const ImageUpload = ({
             <p className="text-sm text-center text-gray-500 mt-[11px]">
               "Drag & Drop" or <br /> "Double click to upload image"
             </p>
+
           </>
+
         )}
+
       </div>
-      <p className="ml-[3rem] lg:mt-[6px] text-xs text-gray-400">
+      <p className="ml-[3rem] lg:mt-[6px]  text-xs text-gray-400">
         SVG, PNG, JPG or GIF (max. 5MB)
       </p>
     </>

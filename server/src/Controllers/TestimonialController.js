@@ -1,10 +1,10 @@
-const homeModel = require("../Models/homeModel");
-const homeData = async (req, res) => {
+const TestimonialModel = require("../Models/TestimonialModel");
+const TestimonialData = async (req, res) => {
   try {
-    const { id, Heading, Description, SmallHeading } = req.body;
+    const { id, Name,Photo, Profession, comment } = req.body;
 
     // Create a new document
-    const newData = await homeModel.create({ id, Heading, Description, SmallHeading });
+    const newData = await TestimonialModel.create({ id, Name,Photo, Profession, comment });
 
     return res.status(201).send({
       status: true,
@@ -23,11 +23,11 @@ const homeData = async (req, res) => {
 
 const getData = async (req, res) => {
   try {
-    const homeData = await homeModel.find();
+    const TestimonialData = await TestimonialModel.find();
     res.status(200).send({
       status: true,
-      msg: "homeData retrieved succesfully",
-      data: homeData,
+      msg: "TestimonialData retrieved succesfully",
+      data: TestimonialData,
     });
   } catch (err) {
     return res
@@ -37,30 +37,31 @@ const getData = async (req, res) => {
 };
 
 const getById = async (req, res) => {
-  const homeId = req.params.homeId;
-  const homeData = await homeModel.findOne({
-    homeId: homeId,
+  const TestimonialId = req.params.TestimonialId;
+  const TestimonialData = await TestimonialModel.findOne({
+    TestimonialId: TestimonialId,
     isDeleted: false,
   });
   return res
     .status(200)
-    .send({ status: true, msg: "Data fetch succesfully", data: homeData });
+    .send({ status: true, msg: "Data fetch succesfully", data: TestimonialData });
 };
 
 
 const updateData = async (req, res) => {
   try {
-    const { id, Heading, Description, SmallHeading } = req.body;
+    const { id, Name, Profession, comment } = req.body;
 
-    let homeId = req.params.homeId;
-    let updateBody = await homeModel.findOneAndUpdate(
-      { _id: homeId },
+    let TestimonialId = req.params.TestimonialId;
+    let updateBody = await TestimonialModel.findOneAndUpdate(
+      { _id: TestimonialId },
       {
         $set: {
-          Heading: Heading,
-          Description: Description,
-          SmallHeading: SmallHeading,
-          homeId: homeId
+          Name: Name,
+          Photo:Photo,
+          Profession: Profession,
+          comment: comment,
+          TestimonialId: TestimonialId
         },
       },
       { new: true }
@@ -80,8 +81,8 @@ const updateData = async (req, res) => {
 
 const Deletedata = async (req, res) => {
   try {
-    const result = await homeModel.deleteMany({});
-    res.send(`Deleted ${result.deletedCount} homedata`);
+    const result = await TestimonialModel.deleteMany({});
+    res.send(`Deleted ${result.deletedCount} Testimonialdata`);
   } catch (error) {
     console.error(error);
     res
@@ -91,29 +92,25 @@ const Deletedata = async (req, res) => {
 };
 const DeleteById = async (req, res) => {
   try {
-    let homeId = req.params.homeId;
+    let TestimonialId = req.params.TestimonialId;
 
-    // Find the document first
-    const existingPage = await homeModel.findById(homeId);
-    console.log("existing---------->", existingPage);
 
-    if (!existingPage) {
-      return res.status(404).send({ status: false, message: "Page not found" });
-    }
-
-    if (existingPage.isDeleted) {
-      return res.status(400).send({ status: false, message: "Data has already been deleted." });
-    }
-
-    // Now update
-    await homeModel.findByIdAndUpdate(
-      homeId,
+    // Find and update in a single query
+    const page = await TestimonialModel.findByIdAndUpdate(
+      TestimonialId,
       { $set: { isDeleted: true, deletedAt: new Date() } },
       { new: true }
     );
 
-    return res.status(200).send({ status: true, message: "Data deleted successfully." });
+    if (!page) {
+      return res.status(404).send({ status: false, message: "Page not found" });
+    }
 
+    if (page.isDeleted) {
+      return res.status(400).send({ status: false, message: "Data has already been deleted." });
+    }
+
+    return res.status(200).send({ status: true, message: "Data deleted successfully." });
   } catch (err) {
     return res.status(500).send({
       status: false,
@@ -123,9 +120,8 @@ const DeleteById = async (req, res) => {
   }
 };
 
-
 module.exports = {
-  homeData,
+  TestimonialData,
   getData,
   getById,
   updateData,

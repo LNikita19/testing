@@ -14,8 +14,6 @@ const homeSchema = new mongoose.Schema(
     Description: {
       type: String,
     },
-  
-    
     isDeleted: {
       type: Boolean,
       default: false,
