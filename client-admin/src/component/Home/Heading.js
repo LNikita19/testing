@@ -233,7 +233,6 @@ const Heading = () => {
       console.error("Error fetching data:", e);
     }
   };
-
   const saveHomeData = async () => {
     try {
       const payload = {
@@ -263,12 +262,13 @@ const Heading = () => {
           isEditing ? "Data updated successfully" : "Data created successfully"
         );
         setIsEditing(false);
-        getHomeData(); // Refresh data in form
+        getHomeData(); // **Refresh data after saving**
       }
     } catch (e) {
       console.error("Error saving data:", e);
     }
   };
+
 
   return (
     <>

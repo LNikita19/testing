@@ -22,6 +22,17 @@ const {
   DeleteaboutById,
 } = require("../Controllers/aboutController");
 
+
+const {
+  programData,
+  getprogramData,
+  getBprogramyId,
+  updateprogramData,
+  Deleteprogramdata,
+  DeleteprogramById,
+} = require("../Controllers/programController");
+
+
 const {
   authorData,
   getauthorData,
@@ -70,6 +81,16 @@ router.get("/getauthorById/:authorId", getauthorById);
 router.put("/updateauthorData/:authorId", upload.single("Photo"), updateAuthorData);
 router.delete("/deleteauthorData", DeleteAuthordata);
 router.delete("/deleteauthorId/:authorId", DeleteAuthorById);
+
+
+//program 
+
+router.post("/programData", upload.single("Photo"), programData);
+router.get("/getprogramData", getprogramData);
+router.get("/getprogramById/:programId", getBprogramyId);
+router.put("/updateprogramData/:programId", upload.single("Photo"), updateprogramData);
+router.delete("/Deleteprogramdata", Deleteprogramdata);
+router.delete("/DeleteprogramById/:programId", DeleteprogramById);
 
 
 //footer

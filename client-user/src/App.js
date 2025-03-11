@@ -9,28 +9,19 @@ import "./App.css";
 // import AdmissionPage from "./component/Admission/admissionPage";
 // import Contact from "./component/Contact/Contact";
 // import Newsletter from "./component/Newsletter";
-import MyForm from "./component/Test";
+// import MyForm from "./component/Test";
+import Navbar from "./component/Navbar";
+import About from "./component/About";
+import Footer from "./component/footer";
 function App() {
-  return (
-    <Router>
-      <div className="w-screen">
-        {/* <Navbar /> */}
+  return (<div className="">
+    <Navbar />
 
-        {/* Routes */}
-        <Routes>
-          {/* <Route path="/" element={<Home />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/activities" element={<Activities />} />
-          <Route path="/admissions" element={<AdmissionPage />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/Newsletter" element={<Newsletter />} /> */}
-          <Route path="/MyForm" element={<MyForm />} />
-          {/* Add other routes as necessary */}
-        </Routes>
+    <About />
+    <Footer />
 
-        {/* <Footer /> */}
-      </div>
-    </Router>
+
+  </div>
   );
 }
 

@@ -26,18 +26,21 @@ const aboutData = async (req, res) => {
 
 const getaboutData = async (req, res) => {
   try {
-    const aboutData = await aboutModel.find();
+    const aboutData = await aboutModel.find().sort({ updatedAt: -1 }).limit(1); // Fetch latest data only
     res.status(200).send({
       status: true,
-      msg: "aboutData retrieved succesfully",
+      msg: "About data retrieved successfully",
       data: aboutData,
     });
   } catch (err) {
-    return res
-      .status(500)
-      .send({ status: false, msg: "server error", error: err.message });
+    return res.status(500).send({
+      status: false,
+      msg: "Server error",
+      error: err.message
+    });
   }
 };
+
 
 const getBaboutyId = async (req, res) => {
   const aboutId = req.params.aboutId;

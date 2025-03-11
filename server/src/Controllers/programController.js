@@ -1,10 +1,20 @@
 const programModel = require("../Models/programModel");
 const programData = async (req, res) => {
     try {
-        const { id, selectProgram, programFees, startDate, endDate, Photo, programTraining, selectLanguage, youTubeLink, Description } = req.body;
+        const { selectProgram, programFees, startDate, endDate, programTraining, selectLanguage, youTubeLink, Description } = req.body;
+        const Photo = req.file ? req.file.path : null;  // Handle file upload
 
-        // Create a new document
-        const newData = await programModel.create({ id, selectProgram, programFees, startDate, endDate, Photo, programTraining, selectLanguage, youTubeLink, Description });
+        const newData = await programModel.create({
+            selectProgram,
+            programFees,
+            startDate,
+            endDate,
+            programTraining,
+            selectLanguage,
+            youTubeLink,
+            Description,
+            Photo, // Save image path
+        });
 
         return res.status(201).send({
             status: true,
@@ -21,22 +31,22 @@ const programData = async (req, res) => {
 };
 
 
-const getData = async (req, res) => {
+
+const getprogramData = async (req, res) => {
     try {
-        const programData = await programModel.find();
+        const programData = await programModel.find({ isDeleted: false });
         res.status(200).send({
             status: true,
-            msg: "programData retrieved succesfully",
+            msg: "programData retrieved successfully",
             data: programData,
         });
     } catch (err) {
-        return res
-            .status(500)
-            .send({ status: false, msg: "server error", error: err.message });
+        return res.status(500).send({ status: false, msg: "server error", error: err.message });
     }
 };
 
-const getById = async (req, res) => {
+
+const getBprogramyId = async (req, res) => {
     const programId = req.params.programId;
     const programData = await programModel.findOne({
         programId: programId,
@@ -48,7 +58,7 @@ const getById = async (req, res) => {
 };
 
 
-const updateData = async (req, res) => {
+const updateprogramData = async (req, res) => {
     try {
         const { id, youTubeLink, Description, selectProgram, endDate, programFees, startDate, Photo, programTraining, selectLanguage } = req.body;
 
@@ -84,7 +94,7 @@ const updateData = async (req, res) => {
     }
 };
 
-const Deletedata = async (req, res) => {
+const Deleteprogramdata = async (req, res) => {
     try {
         const result = await programModel.deleteMany({});
         res.send(`Deleted ${result.deletedCount} programdata`);
@@ -95,7 +105,7 @@ const Deletedata = async (req, res) => {
             .send({ status: false, msg: "server error", error: error.message });
     }
 };
-const DeleteById = async (req, res) => {
+const DeleteprogramById = async (req, res) => {
     try {
         let programId = req.params.programId;
 
@@ -127,9 +137,9 @@ const DeleteById = async (req, res) => {
 
 module.exports = {
     programData,
-    getData,
-    getById,
-    updateData,
-    Deletedata,
-    DeleteById,
+    getprogramData,
+    getBprogramyId,
+    updateprogramData,
+    Deleteprogramdata,
+    DeleteprogramById,
 };

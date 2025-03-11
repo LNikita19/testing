@@ -23,18 +23,20 @@ const homeData = async (req, res) => {
 
 const getData = async (req, res) => {
   try {
-    const homeData = await homeModel.find();
+    const homeData = await homeModel.findOne().sort({ updatedAt: -1 }); // Get the latest updated record
+    if (!homeData) {
+      return res.status(404).send({ status: false, msg: "No data found" });
+    }
     res.status(200).send({
       status: true,
-      msg: "homeData retrieved succesfully",
+      msg: "Home data retrieved successfully",
       data: homeData,
     });
   } catch (err) {
-    return res
-      .status(500)
-      .send({ status: false, msg: "server error", error: err.message });
+    return res.status(500).send({ status: false, msg: "Server error", error: err.message });
   }
 };
+
 
 const getById = async (req, res) => {
   const homeId = req.params.homeId;

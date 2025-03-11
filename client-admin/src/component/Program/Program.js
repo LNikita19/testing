@@ -5,7 +5,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { API_BASE_URL } from "../../config";
 
-const Program = () => {
+const Program = ({ onSave }) => {
     const [description, setDescription] = useState("");
     const [image, setImage] = useState(null);
     const [program, setProgram] = useState("");
@@ -18,16 +18,34 @@ const Program = () => {
 
     const handleSave = async () => {
         try {
-            const response = await axios.put(`${API_BASE_URL}/updateProgramData`, {
-                image, program, programFee, startDate, endDate, timing, language, youtubeLink, description
+            const formData = new FormData();
+            formData.append("Photo", image);
+            formData.append("selectProgram", program);
+            formData.append("programFees", programFee);
+            formData.append("startDate", startDate);
+            formData.append("endDate", endDate);
+            formData.append("programTraining", timing);
+            formData.append("selectLanguage", language);
+            formData.append("youTubeLink", youtubeLink);
+            formData.append("Description", description);
+
+            const response = await axios.post(`${API_BASE_URL}/programData`, formData, {
+                headers: { "Content-Type": "multipart/form-data" },
             });
+
+            console.log("API Response:", response);
+
             if (response?.data?.status) {
                 toast.success("Program Saved Successfully");
+                onSave();  // Call the parent `onSave()` function to refresh list
             }
         } catch (error) {
             console.error("Error saving program:", error);
+            toast.error("Failed to save program");
         }
     };
+
+
 
     return (
         <div className="max-w-3xl ml-[90px] bg-white p-8 rounded-2xl shadow-lg border border-gray-200">
@@ -91,7 +109,7 @@ const Program = () => {
 
             <div className="flex justify-start mt-2 gap-4">
 
-                <SaveButton onClick={handleSave} className="px-4 py-2 bg-[#FF7A00] text-white rounded-md font-bold" />
+                <SaveButton onSave={handleSave} className="px-4 py-2 bg-[#FF7A00] text-white rounded-md font-bold" />
             </div>
         </div>
     );
