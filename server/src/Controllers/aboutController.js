@@ -6,16 +6,21 @@ const aboutData = async (req, res) => {
   try {
     const { id, Heading, Description, Photo, Photo1 } = req.body;
 
-    // Create a new document
-    const newData = await aboutModel.create({ id, Heading, Description, Photo, Photo1 });
+    const newData = await aboutModel.create({
+      Heading, id,
+      Description,
+      Photo,
+      Photo1,
+    });
 
-    return res.status(201).send({
+
+    return res.status(201).json({
       status: true,
       msg: "Data created successfully",
       data: newData,
     });
   } catch (err) {
-    return res.status(500).send({
+    return res.status(500).json({
       status: false,
       msg: "Server error",
       error: err.message,
@@ -24,19 +29,28 @@ const aboutData = async (req, res) => {
 };
 
 
+
+
+
+
 const getaboutData = async (req, res) => {
   try {
-    const aboutData = await aboutModel.find().sort({ updatedAt: -1 }).limit(1); // Fetch latest data only
-    res.status(200).send({
-      status: true,
-      msg: "About data retrieved successfully",
-      data: aboutData,
-    });
-  } catch (err) {
-    return res.status(500).send({
+    const aboutData = await aboutModel.find().sort({ updatedAt: -1 }).limit(1); // Fetch latest data
+    if (aboutData.length > 0) {
+      res.status(200).json({
+        status: true,
+        data: aboutData[0], // Return the first document
+      });
+    } else {
+      res.status(404).json({
+        status: false,
+        message: "No data found",
+      });
+    }
+  } catch (error) {
+    res.status(500).json({
       status: false,
-      msg: "Server error",
-      error: err.message
+      message: error.message,
     });
   }
 };
@@ -56,30 +70,32 @@ const getBaboutyId = async (req, res) => {
 
 const updateaboutData = async (req, res) => {
   try {
-    const { Heading, Description } = req.body;
-    let updateBody = { Heading, Description };
+    const { id, Heading, Description, Photo, Photo1 } = req.body;
+    let aboutId = req.params.aboutId;
 
-    if (req.files?.Photo) {
-      updateBody.Photo = req.files.Photo[0].buffer.toString("base64");
-    }
-    if (req.files?.Photo1) {
-      updateBody.Photo1 = req.files.Photo1[0].buffer.toString("base64");
-    }
-
-    const aboutId = req.params.aboutId;
-    const updatedData = await aboutModel.findByIdAndUpdate(aboutId, updateBody, { new: true });
+    let updateBody = await footerModel.findOneAndUpdate(
+      { _id: aboutId },
+      {
+        $set: {
+          Heading: Heading,
+          Description: Description,
+          Photo: Photo,
+          Photo1: Photo1,
+          aboutId: aboutId
+        },
+      },
+      { new: true }
+    );
 
     return res.status(200).send({
       status: true,
       msg: "Data updated successfully",
-      data: updatedData,
+      data: updateBody,
     });
   } catch (err) {
-    return res.status(500).send({
-      status: false,
-      msg: "Server error",
-      error: err.message,
-    });
+    return res
+      .status(500)
+      .send({ status: false, msg: "server error", error: err.message });
   }
 };
 

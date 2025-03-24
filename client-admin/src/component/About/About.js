@@ -16,22 +16,19 @@ const About = () => {
   const getAboutData = async () => {
     try {
       const response = await axios.get(`${API_BASE_URL}/getaboutData`);
-      const aboutData = response.data.data[0]; // Ensure aboutData exists
+      const aboutData = response.data.data[0];
 
-      if (aboutData && aboutData._id) {
-        setAboutId(aboutData._id);
-        setHeading(aboutData.Heading || "");
-        setDescription(aboutData.Description || "");
-        setImage(aboutData.Photo || null);
-        setImage1(aboutData.Photo1 || null);
-      } else {
-        console.warn("No About data found.");
+      if (aboutData) {
+        setAboutId(aboutData.id);
+        setHeading(aboutData.Heading);
+        setDescription(aboutData.Description);
+        setImage(aboutData.Photo);
+        setImage1(aboutData.Photo1);
       }
     } catch (e) {
       console.error("Error fetching about data:", e);
     }
   };
-
 
   useEffect(() => {
     getAboutData();
@@ -39,31 +36,32 @@ const About = () => {
 
   // Handle Save
   const onSaveChanges = async () => {
-    if (!aboutId) {
-      toast.error("Error: About data not found.");
-      return;
-    }
-
     try {
       const formData = new FormData();
       formData.append("Heading", heading);
       formData.append("Description", description);
-      if (image instanceof File) formData.append("Photo", image);
-      if (image1 instanceof File) formData.append("Photo1", image1);
+      formData.append("photo1", image);
+      formData.append("photo2", image1);
+      let response;
+      if (aboutId) {
+        response = await axios.put(`${API_BASE_URL}/updateaboutData/${aboutId}`, formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+      } else {
+        response = await axios.post(`${API_BASE_URL}/createaboutData`, formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+      }
 
-      const response = await axios.put(
-        `${API_BASE_URL}/updateaboutData/${aboutId}`,
-        formData,
-        { headers: { "Content-Type": "multipart/form-data" } }
-      );
-
-      if (response.data.status) {
-        toast.success("Updated Successfully");
-        getAboutData(); // Refresh data after save
+      if (response?.data?.status) {
+        setAboutId(response.data.data._id);
+        toast.success(aboutId ? "Updated Successfully" : "Created Successfully");
+      } else {
+        toast.error("Failed to save data");
       }
     } catch (e) {
-      console.error("Error updating about data:", e);
-      toast.error("Failed to update");
+      console.error("Error saving about data:", e);
+      toast.error("Error saving data");
     }
   };
 
@@ -71,8 +69,9 @@ const About = () => {
     <div className="2xl:ml-[90px] mt-[5rem] 2xl:w-[900px] h-auto lg:w-[700px] rounded-3xl bg-white shadow-lg border-2px border-[#361A0633] p-8">
       <h2 className="text-[#361A06] text-2xl font-bold mb-6 ml-[2rem]">About Studio</h2>
       <div className="flex flex-row">
-        <ImageUpload selectedImage={image} setImage={setImage} inputId="fileInput1" />
-        <ImageUpload selectedImage={image1} setImage={setImage1} inputId="fileInput2" />
+        <ImageUpload selectedImage={image} setImage={setImage} />
+        <ImageUpload selectedImage={image1} setImage={setImage1} />
+
       </div>
 
       <div className="flex flex-col font-['Roboto']">

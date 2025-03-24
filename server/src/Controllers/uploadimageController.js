@@ -21,7 +21,7 @@ const uploadImageData = async (req, res) => {
 };
 
 
-const getData = async (req, res) => {
+const getImageDataData = async (req, res) => {
     try {
         const uploadImageData = await uploadImageModel.find();
         res.status(200).send({
@@ -36,7 +36,7 @@ const getData = async (req, res) => {
     }
 };
 
-const getById = async (req, res) => {
+const getByImageDataId = async (req, res) => {
     const uploadImageId = req.params.uploadImageId;
     const uploadImageData = await uploadImageModel.findOne({
         uploadImageId: uploadImageId,
@@ -48,7 +48,7 @@ const getById = async (req, res) => {
 };
 
 
-const updateData = async (req, res) => {
+const updateImageDataData = async (req, res) => {
     try {
         const { id, Photo } = req.body;
 
@@ -77,7 +77,7 @@ const updateData = async (req, res) => {
     }
 };
 
-const Deletedata = async (req, res) => {
+const DeleteImageDatadata = async (req, res) => {
     try {
         const result = await uploadImageModel.deleteMany({});
         res.send(`Deleted ${result.deletedCount} uploadImagedata`);
@@ -88,7 +88,7 @@ const Deletedata = async (req, res) => {
             .send({ status: false, msg: "server error", error: error.message });
     }
 };
-const DeleteById = async (req, res) => {
+const DeleteByImageDataId = async (req, res) => {
     try {
         let uploadImageId = req.params.uploadImageId;
 
@@ -120,9 +120,9 @@ const DeleteById = async (req, res) => {
 
 module.exports = {
     uploadImageData,
-    getData,
-    getById,
-    updateData,
-    Deletedata,
-    DeleteById,
+    getImageDataData,
+    getByImageDataId,
+    updateImageDataData,
+    DeleteImageDatadata,
+    DeleteByImageDataId,
 };

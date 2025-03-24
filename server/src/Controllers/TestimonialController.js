@@ -1,10 +1,10 @@
 const TestimonialModel = require("../Models/TestimonialModel");
-const TestimonialData = async (req, res) => {
+const createTestimonial = async (req, res) => {
   try {
-    const { id, Name,Photo, Profession, comment } = req.body;
+    const { id, Name, Photo, Profession, comment } = req.body;
 
     // Create a new document
-    const newData = await TestimonialModel.create({ id, Name,Photo, Profession, comment });
+    const newData = await TestimonialModel.create({ id, Name, Photo, Profession, comment });
 
     return res.status(201).send({
       status: true,
@@ -21,7 +21,7 @@ const TestimonialData = async (req, res) => {
 };
 
 
-const getData = async (req, res) => {
+const getTestimonialData = async (req, res) => {
   try {
     const TestimonialData = await TestimonialModel.find();
     res.status(200).send({
@@ -36,7 +36,7 @@ const getData = async (req, res) => {
   }
 };
 
-const getById = async (req, res) => {
+const getTestimonialDataById = async (req, res) => {
   const TestimonialId = req.params.TestimonialId;
   const TestimonialData = await TestimonialModel.findOne({
     TestimonialId: TestimonialId,
@@ -48,38 +48,49 @@ const getById = async (req, res) => {
 };
 
 
-const updateData = async (req, res) => {
+const updateTestimonialData = async (req, res) => {
   try {
-    const { id, Name, Profession, comment } = req.body;
-
+    const { Name, Profession, comment, Photo } = req.body; // Ensure Photo is included
     let TestimonialId = req.params.TestimonialId;
-    let updateBody = await TestimonialModel.findOneAndUpdate(
-      { _id: TestimonialId },
+
+
+
+    let updatedData = await TestimonialModel.findByIdAndUpdate(
+      TestimonialId,
       {
         $set: {
-          Name: Name,
-          Photo:Photo,
-          Profession: Profession,
-          comment: comment,
-          TestimonialId: TestimonialId
+          Name,
+          Photo,
+          Profession,
+          comment,
         },
       },
       { new: true }
     );
 
+    if (!updatedData) {
+      return res.status(404).send({
+        status: false,
+        msg: "Testimonial not found",
+      });
+    }
+
     return res.status(200).send({
       status: true,
       msg: "Data updated successfully",
-      data: updateBody,
+      data: updatedData,
     });
   } catch (err) {
-    return res
-      .status(500)
-      .send({ status: false, msg: "server error", error: err.message });
+    return res.status(500).send({
+      status: false,
+      msg: "Server error",
+      error: err.message,
+    });
   }
 };
 
-const Deletedata = async (req, res) => {
+
+const deleteTestimonialData = async (req, res) => {
   try {
     const result = await TestimonialModel.deleteMany({});
     res.send(`Deleted ${result.deletedCount} Testimonialdata`);
@@ -90,7 +101,7 @@ const Deletedata = async (req, res) => {
       .send({ status: false, msg: "server error", error: error.message });
   }
 };
-const DeleteById = async (req, res) => {
+const deleteTestimonialDataById = async (req, res) => {
   try {
     let TestimonialId = req.params.TestimonialId;
 
@@ -121,10 +132,10 @@ const DeleteById = async (req, res) => {
 };
 
 module.exports = {
-  TestimonialData,
-  getData,
-  getById,
-  updateData,
-  Deletedata,
-  DeleteById,
+  createTestimonial,
+  getTestimonialData,
+  getTestimonialDataById,
+  updateTestimonialData,
+  deleteTestimonialData,
+  deleteTestimonialDataById
 };

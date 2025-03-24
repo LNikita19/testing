@@ -42,7 +42,12 @@ const {
   DeleteAuthorById,
 } = require('../Controllers/AuthorController');
 
-
+const { createTestimonial,
+  getTestimonialData,
+  getTestimonialDataById,
+  updateTestimonialData,
+  deleteTestimonialData,
+  deleteTestimonialDataById } = require("../Controllers/TestimonialController");
 const { footerData,
   getfooterData,
   getfooterById,
@@ -56,6 +61,33 @@ const {
   getusersData,
 } = require("../Controllers/loginController");
 
+
+const TestimonialController = require("../Controllers/TestimonialController");
+// const multer = require("multer");
+
+// // Configure multer for file uploads
+// const storage = multer.diskStorage({
+//   destination: (req, file, cb) => {
+//     cb(null, "uploads/"); // Save files in the "uploads" folder
+//   },
+//   filename: (req, file, cb) => {
+//     cb(null, Date.now() + "-" + file.originalname); // Unique filename
+//   },
+// });
+
+/// const { createTestimonial,
+//   getTestimonialData,
+//   getTestimonialDataById,
+//   updateTestimonialData,
+//   deleteTestimonialData,
+//   deleteTestimonialDataById} = require("../Controllers/TestimonialController")
+// Testimonial routes
+router.post("/createtestimonial", upload.single("Photo"), TestimonialController.createTestimonial);
+router.put("/updatetestimonialdata/:TestimonialId", upload.single("Photo"), TestimonialController.updateTestimonialData);
+router.get("/gettestimonialdata", TestimonialController.getTestimonialData);
+router.get("/gettestimonialdatabyid/:TestimonialId", TestimonialController.getTestimonialDataById);
+// router.delete("/deletetestimonialdata", TestimonialController.deleteTestimonialData);
+router.delete("/deletetestimonialdatabyid/:TestimonialId", TestimonialController.deleteTestimonialDataById);
 //Home//
 router.post("/createData", upload.single("Photo"), homeData);
 router.get("/getData", getData);
@@ -64,10 +96,19 @@ router.put("/updateData/:homeId", upload.single("Photo"), updateData);
 router.delete("/deleteData", Deletedata);
 router.delete("/deleteId/:homeId", DeleteById);
 //about
-router.post("/aboutData", upload.single("Photo"), aboutData);
+router.post("/createaboutData", upload.single("Photo"), aboutData);
 router.get("/getaboutData", getaboutData);
 router.get("/getaboutById/:aboutId", getBaboutyId);
-router.put("/updateaboutData/:aboutId", upload.fields([{ name: "Photo" }, { name: "Photo1" }]), updateaboutData);
+router.put(
+  "/updateaboutData/:id",
+  upload.fields([
+    { name: "Photo1", maxCount: 1 },
+    { name: "Photo2", maxCount: 1 }
+  ]),
+  updateaboutData
+);
+
+
 
 // router.put("/updateaboutData/:aboutId", upload.single("Photo"), updateaboutData);
 router.delete("/deleteaboutData", Deleteaboutdata);

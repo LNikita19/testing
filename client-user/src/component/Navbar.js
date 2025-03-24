@@ -2,10 +2,13 @@ import React from "react";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { API_BASE_URL } from "../config";
+import ContactPopup from "./program/ContactPopup"; // Import ContactPopup
+
 const Navbar = () => {
     const [smallHeading, setSmallHeading] = useState("");
     const [mainHeading, setMainHeading] = useState("");
     const [description, setDescription] = useState("");
+    const [showPopup, setShowPopup] = useState(false);
 
     useEffect(() => {
         getHeroData();
@@ -45,9 +48,13 @@ const Navbar = () => {
             {/* Navbar */}
             <div className="absolute top-0 left-0 w-full flex flex-col items-center lg:flex-row lg:justify-between lg:items-center px-10 py-5 border-b border-white/20">
                 <img src="/Logo.png" alt="Logo" className="w-40 mx-auto lg:mx-0" />
-                <button className="hidden lg:block bg-[#361A06] text-white border border-[#FFF9E180] px-6 py-2 rounded-md">
+                <button
+                    className="hidden lg:block bg-[#361A06] text-white border border-[#FFF9E180] px-6 py-2 rounded-md"
+                    onClick={() => setShowPopup(true)} // Open popup on click
+                >
                     CONTACT US
                 </button>
+                {showPopup && <ContactPopup onClose={() => setShowPopup(false)} />}
             </div>
 
 
