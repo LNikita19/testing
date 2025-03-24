@@ -16,6 +16,8 @@ import Footer from "./component/footer";
 import PopupProgram from "./component/program/PopupProgram";
 import Programs from "./component/programs";
 import OnlineClass from "./component/OnlineClass";
+import Testimonials from "./component/Testimonials";
+import ImageSlider from "./component/Images";
 function App() {
   return (<div className="">
     <Navbar />
@@ -23,6 +25,8 @@ function App() {
     <About />
     <Programs />
     <OnlineClass />
+    <Testimonials />
+    <ImageSlider />
     <Footer />
 
 
