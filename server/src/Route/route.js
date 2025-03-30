@@ -54,6 +54,7 @@ const {
   createUser,
   userLogin,
   getusersData,
+  DeleteUser,
 } = require("../Controllers/loginController");
 
 const { onlineclassData,
@@ -131,15 +132,16 @@ const path = require('path');
 const fs = require('fs');
 const storage1 = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "uploads/"); // Ensure this directory exists
+    cb(null, "uploads/"); // Ensure "uploads/" exists
   },
   filename: function (req, file, cb) {
     cb(null, Date.now() + "-" + file.originalname);
   },
 });
 
+
 const upload1 = multer({
-  storage: storage,
+  storage1: storage1,
   limits: { fileSize: 10 * 1024 * 1024 }, // 10MB limit
 }).array("Photos", 5);
 router.post('/createaboutData', upload1, aboutData);
@@ -200,4 +202,6 @@ router.delete("/DeleteBfooteryId/:footerId", DeleteBfooteryId);
 router.post("/createUser", createUser);
 router.post("/userLogin", userLogin);
 router.get("/getusersData", getusersData);
+router.delete("/DeleteUser", DeleteUser);
+
 module.exports = router;

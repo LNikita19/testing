@@ -85,9 +85,21 @@ const getusersData = async (req, res) => {
       .send({ status: false, msg: "server error", error: err.message });
   }
 };
+const DeleteUser = async (req, res) => {
+  try {
+    const result = await loginModel.deleteMany({});
+    res.send(`Deleted ${result.deletedCount} programdata`);
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .send({ status: false, msg: "server error", error: error.message });
+  }
+};
 
 module.exports = {
   createUser,
   userLogin,
   getusersData,
+  DeleteUser,
 };
