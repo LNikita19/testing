@@ -1,15 +1,14 @@
 import React, { useEffect, useState } from "react";
 import ImageUpload from "./imageUpload";
-import SaveButton from "../Buttons/saveButton";
 import { API_BASE_URL } from "../../config";
 import axios from "axios";
 import { toast } from "react-toastify";
+import SaveButton from "../Buttons/saveButton";
 
 const About = () => {
   const [heading, setHeading] = useState("");
   const [description, setDescription] = useState("");
-  const [image, setImage] = useState(null);
-  const [image1, setImage1] = useState(null);
+  const [images, setImages] = useState([]); // Array for multiple images
   const [aboutId, setAboutId] = useState(null);
 
   // Fetch about data
@@ -22,8 +21,7 @@ const About = () => {
         setAboutId(aboutData.id);
         setHeading(aboutData.Heading);
         setDescription(aboutData.Description);
-        setImage(aboutData.Photo);
-        setImage1(aboutData.Photo1);
+        setImages(aboutData.Photos || []); // Ensure it's an array
       }
     } catch (e) {
       console.error("Error fetching about data:", e);
@@ -40,8 +38,11 @@ const About = () => {
       const formData = new FormData();
       formData.append("Heading", heading);
       formData.append("Description", description);
-      formData.append("photo1", image);
-      formData.append("photo2", image1);
+
+      images.forEach((image) => {
+        if (image instanceof File) formData.append("Photos", image); // Field name should match multer
+      });
+
       let response;
       if (aboutId) {
         response = await axios.put(`${API_BASE_URL}/updateaboutData/${aboutId}`, formData, {
@@ -56,6 +57,7 @@ const About = () => {
       if (response?.data?.status) {
         setAboutId(response.data.data._id);
         toast.success(aboutId ? "Updated Successfully" : "Created Successfully");
+        getAboutData(); // Refresh data after save
       } else {
         toast.error("Failed to save data");
       }
@@ -68,10 +70,10 @@ const About = () => {
   return (
     <div className="2xl:ml-[90px] mt-[5rem] 2xl:w-[900px] h-auto lg:w-[700px] rounded-3xl bg-white shadow-lg border-2px border-[#361A0633] p-8">
       <h2 className="text-[#361A06] text-2xl font-bold mb-6 ml-[2rem]">About Studio</h2>
-      <div className="flex flex-row">
-        <ImageUpload selectedImage={image} setImage={setImage} />
-        <ImageUpload selectedImage={image1} setImage={setImage1} />
 
+      <div className="flex flex-row gap-4">
+        <ImageUpload selectedImages={images} setImages={setImages} inputId="about-image-1" index={0} />
+        <ImageUpload selectedImages={images} setImages={setImages} inputId="about-image-2" index={1} />
       </div>
 
       <div className="flex flex-col font-['Roboto']">

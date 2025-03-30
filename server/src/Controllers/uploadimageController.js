@@ -1,4 +1,4 @@
-const uploadImageModel = require("../Models/uploadImageModel");
+const uploadImageModel = require("../Models/uploadImagesModel");
 const uploadImageData = async (req, res) => {
     try {
         const { id, Photo } = req.body;

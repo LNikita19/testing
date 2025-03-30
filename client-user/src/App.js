@@ -12,7 +12,7 @@ import "./App.css";
 // import MyForm from "./component/Test";
 import Navbar from "./component/Navbar";
 import About from "./component/About";
-import Footer from "./component/footer";
+import Footer from "./component/Footer";
 import PopupProgram from "./component/program/PopupProgram";
 import Programs from "./component/programs";
 import OnlineClass from "./component/OnlineClass";

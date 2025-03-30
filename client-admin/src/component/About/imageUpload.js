@@ -1,10 +1,14 @@
 import React from "react";
 
-const ImageUpload = ({ selectedImage, setImage, inputId }) => {
+const ImageUpload = ({ selectedImages, setImages, inputId, index }) => {
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      setImage(file);
+      setImages((prevImages) => {
+        const newImages = [...prevImages];
+        newImages[index] = file; // Replace the image at the given index
+        return newImages;
+      });
     }
   };
 
@@ -28,11 +32,11 @@ const ImageUpload = ({ selectedImage, setImage, inputId }) => {
         onChange={handleImageChange}
         accept="image/*"
       />
-      {selectedImage ? (
+      {selectedImages[index] ? (
         <img
-          src={URL.createObjectURL(selectedImage)}
+          src={selectedImages[index] instanceof File ? URL.createObjectURL(selectedImages[index]) : selectedImages[index]}
           alt="uploaded"
-          className="w-full h-full object-cover rounded"
+          className="w-32 h-32 object-cover rounded"
         />
       ) : (
         <>

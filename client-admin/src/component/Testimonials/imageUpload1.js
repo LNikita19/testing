@@ -1,4 +1,3 @@
-
 import React from "react";
 import SaveButton from "../Buttons/saveButton";
 import axios from "axios";
@@ -8,8 +7,6 @@ import { toast } from "react-toastify";
 const ImageUpload1 = ({
     selectedImage,
     setImage,
-    setToggleSwitch,
-    toggleSwitch,
     slideId,
     setActiveSlideId,
 }) => {
@@ -30,25 +27,16 @@ const ImageUpload1 = ({
         const file = e.dataTransfer.files[0];
         handleImageChange({ target: { files: [file] } });
     };
+
     const handleCancel = () => {
         setImage(null);
     };
-    const [activeSlideId, setActiveSlideId] = useState(1);
 
-    const onSaveChanges = async () => {
-        // Close the popup first
-        closePopUp();
-        // Proceed with saving changes
-        if (activeSlideId !== null) {
-            await handleSwitch(activeSlideId);
-        }
-    };
-    async function saveAboutData() {
+    async function saveFooterData() {
         try {
             const payload = {
                 id: slideId,
                 Photo: selectedImage,
-                Published: toggleSwitch,
             };
             const config = {
                 headers: {
@@ -57,7 +45,7 @@ const ImageUpload1 = ({
             };
 
             const response = await axios.post(
-                `${API_BASE_URL}/createaboutData`,
+                `${API_BASE_URL}/uploadImageData`,
                 payload,
                 config
             );
@@ -66,14 +54,14 @@ const ImageUpload1 = ({
                 toast.success("Updated Successfully");
             }
             setImage(response.data.data?.Photo);
-            setToggleSwitch(response?.data?.data?.Published);
             setActiveSlideId(response?.data?.data?.id);
         } catch (e) {
             console.log("Error:", e);
         }
     }
+
     const handleSave = () => {
-        saveAboutData();
+        saveFooterData();
     };
 
     const handleClick = () => {
@@ -83,15 +71,11 @@ const ImageUpload1 = ({
     const handleDragOver = (e) => {
         e.preventDefault();
     };
-    const closePopUp = () => {
-        setActiveSlideId(1);
-        setTogglePop(false);
-    };
 
     return (
         <>
             <div
-                className="pt-6 ml-[30px]  flex flex-col items-center justify-center w-[250px] 2xl:h-[152px] lg:h-[150px] rounded bg-[#C2C2C28F]"
+                className="pt-6 ml-[30px] flex flex-col items-center justify-center w-[250px] 2xl:h-[152px] lg:h-[150px] rounded bg-[#C2C2C28F]"
                 onDoubleClick={handleClick}
                 onDragOver={handleDragOver}
                 onDrop={handleDrop}
@@ -117,13 +101,10 @@ const ImageUpload1 = ({
                         <p className="text-sm text-center text-gray-500 mt-[11px]">
                             "Drag & Drop" or <br /> "Double click to upload image"
                         </p>
-
                     </>
-
                 )}
-
             </div>
-            <p className="ml-[3rem] lg:mt-[6px]  text-xs text-gray-400">
+            <p className="ml-[3rem] lg:mt-[6px] text-xs text-gray-400">
                 SVG, PNG, JPG or GIF (max. 5MB)
             </p>
         </>

@@ -1,23 +1,21 @@
 const mongoose = require("mongoose");
 
-const userSchema = new mongoose.Schema(
+const userContactSchema = new mongoose.Schema(
   {
     Name: {
       type: String,
     },
-    Mobile: {
+    Phone: {
       type: String,
     },
     Email: {
       type: String,
     },
-    Qualifications: {
+    Message: {
       type: String,
     },
-    Experience: {
-      type: String,
-    },
-    Resume: {
+
+    LastName: {
       type: String,
     },
     isDeleted: {
@@ -27,4 +25,4 @@ const userSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
-module.exports = mongoose.model("User", userSchema);
+module.exports = mongoose.model("UserContact", userContactSchema);

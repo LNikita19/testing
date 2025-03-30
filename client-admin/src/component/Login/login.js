@@ -1,11 +1,21 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { API_BASE_URL } from "../../config";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
-const Login = () => {
+const Login = ({ setIsLoggedIn }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // Check if user is already logged in
+    if (localStorage.getItem("token")) {
+      setIsLoggedIn(true);
+      navigate("/Home");
+    }
+  }, [navigate, setIsLoggedIn]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -17,15 +27,14 @@ const Login = () => {
 
       if (response.data.status === "loggedin") {
         localStorage.setItem("token", response.data.token);
-        // Redirect or update state to reflect logged-in status
-        window.location.href = "/dashboard"; // Example redirect
+        setIsLoggedIn(true);
+        navigate("/Home"); // Redirect to Home after login
       }
     } catch (err) {
       setError("Invalid credentials. Please try again.");
       console.error("Login error:", err);
     }
   };
-
   return (
     <div className="flex flex-col bg-[#FFF9E1] justify-center items-center min-h-screen">
       <div className="w-full max-w-lg p-8 border-2 border-[#4A301C] rounded-lg shadow-lg bg-white">

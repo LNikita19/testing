@@ -8,7 +8,7 @@ const Navbar = () => {
     { name: "Hero Section", path: "/Home" },
     { name: "About Studio", path: "/About" },
     { name: "Program", path: "/ProgramLIst" },
-    { name: "Online Classes", path: "/Home" },
+    { name: "Online Classes", path: "/ClassList" },
     { name: "Author", path: "/Author" },
     { name: "Testimonials", path: "/Testimonials" },
     { name: "Footer Section", path: "/Footer" },

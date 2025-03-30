@@ -4,7 +4,8 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        'plusjakarta': ['PlusJakartaSans', 'sans-serif'], // Define Tailwind utility class
+        david: ["DavidLibre", "serif"],
+        jakarta: ["PlusJakartaSans", "sans-serif"],
       },
     },
   },

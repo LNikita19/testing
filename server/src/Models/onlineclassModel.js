@@ -1,6 +1,8 @@
+// onlineclassModel.js
+
 const mongoose = require("mongoose");
 
-const programSchema = new mongoose.Schema(
+const OnlineClassSchema = new mongoose.Schema(
     {
         id: {
             type: Number,
@@ -20,7 +22,7 @@ const programSchema = new mongoose.Schema(
         endDate: {
             type: Date,
         },
-        programTraining: {
+        programTiming: {
             type: String,
         },
         selectLanguage: {
@@ -32,6 +34,10 @@ const programSchema = new mongoose.Schema(
         Description: {
             type: String,
         },
+        faq: [{
+            question: { type: String },
+            answer: { type: String}
+        }],
         isDeleted: {
             type: Boolean,
             default: false,
@@ -39,4 +45,5 @@ const programSchema = new mongoose.Schema(
     },
     { timestamps: true }
 );
-module.exports = mongoose.model("Program", programSchema);
+
+module.exports = mongoose.model("OnlineClass", OnlineClassSchema);

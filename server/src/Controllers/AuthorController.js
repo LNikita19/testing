@@ -20,21 +20,19 @@ const authorData = async (req, res) => {
     }
 };
 
-
 const getauthorData = async (req, res) => {
     try {
-        const authorData = await authorModel.find();
+        const authorData = await authorModel.find().sort({ _id: -1 }).limit(1); // Get only the latest entry
         res.status(200).send({
             status: true,
-            msg: "authorData retrieved succesfully",
+            msg: "Latest authorData retrieved successfully",
             data: authorData,
         });
     } catch (err) {
-        return res
-            .status(500)
-            .send({ status: false, msg: "server error", error: err.message });
+        return res.status(500).send({ status: false, msg: "server error", error: err.message });
     }
 };
+
 
 const getauthorById = async (req, res) => {
     const authorId = req.params.authorId;

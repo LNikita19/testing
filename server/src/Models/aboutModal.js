@@ -5,11 +5,8 @@ const aboutSchema = new mongoose.Schema(
     id: {
       type: Number,
     },
-    Photo: {
-      type: String,
-    },
-    Photo1: {
-      type: String,
+    Photos: {
+      type: [String], // Store multiple image paths
     },
     Heading: {
       type: String,

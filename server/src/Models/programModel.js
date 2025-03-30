@@ -14,13 +14,16 @@ const programSchema = new mongoose.Schema(
         programFees: {
             type: String,
         },
+        Description:{
+            type:String,
+        },
         startDate: {
             type: Date,
         },
         endDate: {
             type: Date,
         },
-        programTraining: {
+        programTiming: {
             type: String,
         },
         selectLanguage: {
@@ -29,9 +32,13 @@ const programSchema = new mongoose.Schema(
         youTubeLink: {
             type: String,
         },
-        Description: {
+        Quto: {
             type: String,
         },
+        faq: [{
+            question: { type: String },
+            answer: { type: String}
+        }],
         isDeleted: {
             type: Boolean,
             default: false,

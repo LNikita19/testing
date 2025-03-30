@@ -1,37 +1,45 @@
 const aboutModel = require("../Models/aboutModal");
-const multer = require("multer");
-const upload = multer({ storage: multer.memoryStorage() });
+const multer = require('multer');
+
+// In your routes
 
 const aboutData = async (req, res) => {
   try {
-    const { id, Heading, Description, Photo, Photo1 } = req.body;
+    const { Heading, Description } = req.body;
+    const Photos = req.files.map((file) => file.path); // Extract file paths
 
-    const newData = await aboutModel.create({
-      Heading, id,
+    const about = new aboutModel({
+      Heading,
       Description,
-      Photo,
-      Photo1,
+      Photos,
     });
 
-
-    return res.status(201).json({
-      status: true,
-      msg: "Data created successfully",
-      data: newData,
-    });
+    await about.save();
+    res.status(201).json({ status: true, data: about });
   } catch (err) {
-    return res.status(500).json({
-      status: false,
-      msg: "Server error",
-      error: err.message,
-    });
+    console.error("Error saving about data:", err);
+    res.status(500).json({ status: false, message: "Server Error" });
   }
-};
+}
 
 
+const updateaboutData = async (req, res) => {
+  try {
+    const { Heading, Description } = req.body;
+    const Photos = req.files.map((file) => file.path); // Extract file paths
 
+    const updatedAbout = await aboutModel.findByIdAndUpdate(
+      req.params.id,
+      { Heading, Description, Photos },
+      { new: true }
+    );
 
-
+    res.json({ status: true, data: updatedAbout });
+  } catch (err) {
+    console.error("Error updating about data:", err);
+    res.status(500).json({ status: false, message: "Server Error" });
+  }
+}
 
 const getaboutData = async (req, res) => {
   try {
@@ -68,36 +76,36 @@ const getBaboutyId = async (req, res) => {
 };
 
 
-const updateaboutData = async (req, res) => {
-  try {
-    const { id, Heading, Description, Photo, Photo1 } = req.body;
-    let aboutId = req.params.aboutId;
+// const updateaboutData = async (req, res) => {
+//   try {
+//     const { id, Heading, Description, Photo, Photo1 } = req.body;
+//     let aboutId = req.params.aboutId;
 
-    let updateBody = await footerModel.findOneAndUpdate(
-      { _id: aboutId },
-      {
-        $set: {
-          Heading: Heading,
-          Description: Description,
-          Photo: Photo,
-          Photo1: Photo1,
-          aboutId: aboutId
-        },
-      },
-      { new: true }
-    );
+//     let updateBody = await footerModel.findOneAndUpdate(
+//       { _id: aboutId },
+//       {
+//         $set: {
+//           Heading: Heading,
+//           Description: Description,
+//           Photo: Photo,
+//           Photo1: Photo1,
+//           aboutId: aboutId
+//         },
+//       },
+//       { new: true }
+//     );
 
-    return res.status(200).send({
-      status: true,
-      msg: "Data updated successfully",
-      data: updateBody,
-    });
-  } catch (err) {
-    return res
-      .status(500)
-      .send({ status: false, msg: "server error", error: err.message });
-  }
-};
+//     return res.status(200).send({
+//       status: true,
+//       msg: "Data updated successfully",
+//       data: updateBody,
+//     });
+//   } catch (err) {
+//     return res
+//       .status(500)
+//       .send({ status: false, msg: "server error", error: err.message });
+//   }
+// };
 
 const Deleteaboutdata = async (req, res) => {
   try {

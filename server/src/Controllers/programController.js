@@ -1,19 +1,18 @@
 const programModel = require("../Models/programModel");
 const programData = async (req, res) => {
     try {
-        const { selectProgram, programFees, startDate, endDate, programTraining, selectLanguage, youTubeLink, Description } = req.body;
-        const Photo = req.file ? req.file.path : null;  // Handle file upload
+
+        const { id, Photo, faq, selectProgram, Description, programFees, startDate, endDate, programTiming, selectLanguage, youTubeLink, Quto } = req.body;
+        let parsedFaq = [];
+        if (typeof faq === "string") {
+            parsedFaq = JSON.parse(faq);  // Parse if it's a string
+        } else if (Array.isArray(faq)) {
+            parsedFaq = faq;  // Directly assign if it's already an array
+        }
+
 
         const newData = await programModel.create({
-            selectProgram,
-            programFees,
-            startDate,
-            endDate,
-            programTraining,
-            selectLanguage,
-            youTubeLink,
-            Description,
-            Photo, // Save image path
+            id, Photo, selectProgram, Description, programFees, faq: parsedFaq, startDate, endDate, programTiming, selectLanguage, youTubeLink, Quto
         });
 
         return res.status(201).send({
@@ -32,9 +31,10 @@ const programData = async (req, res) => {
 
 
 
+
 const getprogramData = async (req, res) => {
     try {
-        const programData = await programModel.find({ isDeleted: false });
+        const programData = await programModel.find();
         res.status(200).send({
             status: true,
             msg: "programData retrieved successfully",
@@ -47,36 +47,56 @@ const getprogramData = async (req, res) => {
 
 
 const getBprogramyId = async (req, res) => {
-    const programId = req.params.programId;
-    const programData = await programModel.findOne({
-        programId: programId,
-        isDeleted: false,
-    });
-    return res
-        .status(200)
-        .send({ status: true, msg: "Data fetch succesfully", data: programData });
+    try {
+        const programId = req.params.programId;
+
+        // Check if programId is a valid ObjectId
+        // if (!mongoose.Types.ObjectId.isValid(programId)) {
+        //     return res.status(400).send({ status: false, msg: "Invalid program ID" });
+        // }
+
+        const programData = await programModel.findOne({
+            _id: programId, // Use `_id` instead of `programId`
+            isDeleted: false,
+        });
+
+        if (!programData) {
+            return res.status(404).send({ status: false, msg: "Program not found" });
+        }
+
+        return res.status(200).send({ status: true, msg: "Data fetched successfully", data: programData });
+    } catch (error) {
+        console.error("Error fetching program by ID:", error);
+        return res.status(500).send({ status: false, msg: "Internal Server Error" });
+    }
 };
 
 
 const updateprogramData = async (req, res) => {
     try {
-        const { id, youTubeLink, Description, selectProgram, endDate, programFees, startDate, Photo, programTraining, selectLanguage } = req.body;
+        console.log("Update Request Body:", req.body); // Debugging
+
+        const { id, youTubeLink, faq, Quto, Description, selectProgram, endDate, programFees, startDate, Photo, programTiming, selectLanguage } = req.body;
+
+        if (!Photo) {
+            return res.status(400).send({ status: false, msg: "Photo is required" });
+        }
 
         let programId = req.params.programId;
         let updateBody = await programModel.findOneAndUpdate(
             { _id: programId },
             {
                 $set: {
-                    selectProgram: selectProgram,
-                    endDate: endDate,
-                    selectLanguage: selectLanguage,
-                    programFees: programFees,
-                    Photo: Photo,
-                    youTubeLink: youTubeLink,
-                    Description: Description,
-                    startDate: startDate,
-                    programTraining: programTraining,
-                    programId: programId
+                    selectProgram, Description,
+                    endDate,
+                    selectLanguage,
+                    programFees,
+                    Photo,
+                    youTubeLink,
+                    Quto,
+                    startDate,
+                    programTiming,
+                    faq
                 },
             },
             { new: true }
@@ -88,9 +108,7 @@ const updateprogramData = async (req, res) => {
             data: updateBody,
         });
     } catch (err) {
-        return res
-            .status(500)
-            .send({ status: false, msg: "server error", error: err.message });
+        return res.status(500).send({ status: false, msg: "Server error", error: err.message });
     }
 };
 
@@ -110,20 +128,23 @@ const DeleteprogramById = async (req, res) => {
         let programId = req.params.programId;
 
 
-        // Find and update in a single query
-        const page = await programModel.findByIdAndUpdate(
+
+
+        const existingDocument = await programModel.findById(programId);
+        if (!existingDocument) {
+            return res.status(404).send({ status: false, message: "Document not found" });
+        }
+
+        if (existingDocument.isDeleted) {
+            return res.status(400).send({ status: false, message: "Data has already been deleted." });
+        }
+
+        // Soft delete the document by updating isDeleted
+        await programModel.findByIdAndDelete(
             programId,
             { $set: { isDeleted: true, deletedAt: new Date() } },
             { new: true }
         );
-
-        if (!page) {
-            return res.status(404).send({ status: false, message: "Page not found" });
-        }
-
-        if (page.isDeleted) {
-            return res.status(400).send({ status: false, message: "Data has already been deleted." });
-        }
 
         return res.status(200).send({ status: true, message: "Data deleted successfully." });
     } catch (err) {
@@ -134,6 +155,7 @@ const DeleteprogramById = async (req, res) => {
         });
     }
 };
+
 
 module.exports = {
     programData,

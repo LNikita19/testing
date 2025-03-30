@@ -1,10 +1,10 @@
 const footerModel = require("../Models/FooterModel");
 const footerData = async (req, res) => {
   try {
-    const { id, Location,YouTubeLink,XLink, ContactNumber, Photo, instagramLink,FacebookLink } = req.body;
+    const { id, Location, YouTubeLink, XLink, ContactNumber, Photo, instagramLink, FacebookLink } = req.body;
 
     // Create a new document
-    const newData = await footerModel.create({ id, Location,YouTubeLink,XLink, ContactNumber, Photo, instagramLink,FacebookLink });
+    const newData = await footerModel.create({ id, Location, YouTubeLink, XLink, ContactNumber, Photo, instagramLink, FacebookLink });
 
     return res.status(201).send({
       status: true,
@@ -23,18 +23,20 @@ const footerData = async (req, res) => {
 
 const getfooterData = async (req, res) => {
   try {
-    const footerData = await footerModel.find();
+    const footerData = await footerModel.findOne();
+    if (!footerData) {
+      return res.status(404).send({ status: false, msg: "No footer data found" });
+    }
     res.status(200).send({
       status: true,
-      msg: "footerData retrieved succesfully",
+      msg: "Footer data retrieved successfully",
       data: footerData,
     });
   } catch (err) {
-    return res
-      .status(500)
-      .send({ status: false, msg: "server error", error: err.message });
+    return res.status(500).send({ status: false, msg: "server error", error: err.message });
   }
 };
+
 
 const getfooterById = async (req, res) => {
   const footerId = req.params.footerId;
@@ -50,7 +52,7 @@ const getfooterById = async (req, res) => {
 
 const updatefooterData = async (req, res) => {
   try {
-    const { id, Location, ContactNumber,YouTubeLink,XLink, Photo, instagramLink,FacebookLink } = req.body;
+    const { id, Location, ContactNumber, YouTubeLink, XLink, Photo, instagramLink, FacebookLink } = req.body;
 
     let footerId = req.params.footerId;
     let updateBody = await footerModel.findOneAndUpdate(
@@ -59,10 +61,10 @@ const updatefooterData = async (req, res) => {
         $set: {
           Location: Location,
           ContactNumber: ContactNumber,
-          FacebookLink:FacebookLink,
+          FacebookLink: FacebookLink,
           YouTubeLink: YouTubeLink,
           Photo: Photo,
-          XLink:XLink,
+          XLink: XLink,
           instagramLink: instagramLink,
           footerId: footerId
         },
@@ -93,7 +95,7 @@ const Deletefooterdata = async (req, res) => {
       .send({ status: false, msg: "server error", error: error.message });
   }
 };
-const   DeleteBfooteryId= async (req, res) => {
+const DeleteBfooteryId = async (req, res) => {
   try {
     let footerId = req.params.footerId;
 

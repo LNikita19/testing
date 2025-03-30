@@ -37,42 +37,45 @@ const getTestimonialData = async (req, res) => {
 };
 
 const getTestimonialDataById = async (req, res) => {
-  const TestimonialId = req.params.TestimonialId;
-  const TestimonialData = await TestimonialModel.findOne({
-    TestimonialId: TestimonialId,
-    isDeleted: false,
-  });
-  return res
-    .status(200)
-    .send({ status: true, msg: "Data fetch succesfully", data: TestimonialData });
+  try {
+    const testimonialId = req.params.testimonialId;
+    const testimonial = await TestimonialModel.findOne({
+      _id: testimonialId,
+      isDeleted: false,
+    });
+
+    if (!testimonial) {
+      return res.status(404).send({ status: false, msg: "Testimonial not found" });
+    }
+
+    return res.status(200).send({
+      status: true,
+      msg: "Data fetched successfully",
+      data: testimonial,
+    });
+  } catch (err) {
+    return res.status(500).send({
+      status: false,
+      msg: "Server error",
+      error: err.message,
+    });
+  }
 };
 
 
 const updateTestimonialData = async (req, res) => {
   try {
-    const { Name, Profession, comment, Photo } = req.body; // Ensure Photo is included
-    let TestimonialId = req.params.TestimonialId;
+    const { Name, Profession, comment, Photo } = req.body;
+    const testimonialId = req.params.testimonialId;
 
-
-
-    let updatedData = await TestimonialModel.findByIdAndUpdate(
-      TestimonialId,
-      {
-        $set: {
-          Name,
-          Photo,
-          Profession,
-          comment,
-        },
-      },
+    const updatedData = await TestimonialModel.findByIdAndUpdate(
+      testimonialId,
+      { $set: { Name, Photo, Profession, comment } },
       { new: true }
     );
 
     if (!updatedData) {
-      return res.status(404).send({
-        status: false,
-        msg: "Testimonial not found",
-      });
+      return res.status(404).send({ status: false, msg: "Testimonial not found" });
     }
 
     return res.status(200).send({
@@ -89,6 +92,37 @@ const updateTestimonialData = async (req, res) => {
   }
 };
 
+const deleteTestimonialDataById = async (req, res) => {
+  try {
+    const testimonialId = req.params.testimonialId;
+
+    // Check if already deleted
+    const existingTestimonial = await TestimonialModel.findById(testimonialId);
+    if (!existingTestimonial) {
+      return res.status(404).send({ status: false, message: "Testimonial not found" });
+    }
+    if (existingTestimonial.isDeleted) {
+      return res.status(400).send({ status: false, message: "Data has already been deleted." });
+    }
+
+    // Soft delete the testimonial
+    await TestimonialModel.findByIdAndDelete(
+      testimonialId,
+      { $set: { isDeleted: true, deletedAt: new Date() } },
+      { new: true }
+    );
+
+    return res.status(200).send({ status: true, message: "Data deleted successfully." });
+  } catch (err) {
+    return res.status(500).send({
+      status: false,
+      msg: "Server error",
+      error: err.message,
+    });
+  }
+};
+
+
 
 const deleteTestimonialData = async (req, res) => {
   try {
@@ -99,35 +133,6 @@ const deleteTestimonialData = async (req, res) => {
     res
       .status(500)
       .send({ status: false, msg: "server error", error: error.message });
-  }
-};
-const deleteTestimonialDataById = async (req, res) => {
-  try {
-    let TestimonialId = req.params.TestimonialId;
-
-
-    // Find and update in a single query
-    const page = await TestimonialModel.findByIdAndUpdate(
-      TestimonialId,
-      { $set: { isDeleted: true, deletedAt: new Date() } },
-      { new: true }
-    );
-
-    if (!page) {
-      return res.status(404).send({ status: false, message: "Page not found" });
-    }
-
-    if (page.isDeleted) {
-      return res.status(400).send({ status: false, message: "Data has already been deleted." });
-    }
-
-    return res.status(200).send({ status: true, message: "Data deleted successfully." });
-  } catch (err) {
-    return res.status(500).send({
-      status: false,
-      msg: "Server error",
-      error: err.message,
-    });
   }
 };
 
